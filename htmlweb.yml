@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: html-webserver
+    labels:
+        server: apache-httpd
+spec:
+    ports:
+     -  port: 80
+        targetPort: 80
+        nodePort: 31001
+    selector:
+        server: apache-httpd
+    type: NodePort
+
+---
+
+apiVersion: v1 
+kind: PersistentVolumeClaim
+metadata:
+    name: html-pvc 
+    labels:
+        server: apache-httpd 
+spec:
+    accessModes:
+     -  ReadWriteOnce
+    resources:
+        requests:
+            storage: 10Gi
+
+---
+
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+    name: html-webserver 
+    labels:
+        server: apache-httpd 
+spec:
+    selector:
+        matchLabels:
+            server: apache-httpd 
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                server: apache-httpd 
+        spec:
+            containers:
+             -  name: html 
+                image: httpd 
+                ports:
+                 -  containerPort: 80
+                    name: html 
+                volumeMounts:
+                 -  name: html-persistent-storage 
+                    mountPath: /usr/local/apache2/htdocs/
+            volumes:
+             -  name: html-persistent-storage 
+                persistentVolumeClaim:
+                    claimName: html-pvc  
+    
