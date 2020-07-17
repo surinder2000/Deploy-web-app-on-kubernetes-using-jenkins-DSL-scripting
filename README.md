@@ -5,6 +5,32 @@ Deploy web app on top of kubernetes using jenkins and create jobs in jenkins usi
 * Must have minikube installed
 * Must have kubectl configured
 
+### Create config file for configuring kubectl inside container
+Put the following lines inside config file for configuration of kubectl inside container
+
+    apiVersion: v1
+    kind: Config
+
+    clusters:
+    - cluster:
+        server: https://192.168.99.111:8443
+        certificate-authority: ca.crt
+      name: mycluster
+
+    contexts:
+    - context:
+        cluster: mycluster
+        user: surinder
+
+    users:
+    - name: surinder
+      user:
+        client-key: client.key
+        client-certificate: client.crt
+        
+        
+While creating container image copy this config file with other key certificate files that are used in it inside container image
+
 ### Create Jenkins container image with kubectl configured
 Following set of commands used for creating Jenkins container image with kubectl configured
 
