@@ -5,6 +5,32 @@ Deploy web app on top of kubernetes using jenkins and create jobs in jenkins usi
 * Must have minikube installed
 * Must have kubectl configured
 
+### Create config file for configuring kubectl inside container
+Put the following lines inside config file for configuration of kubectl inside container
+
+    apiVersion: v1
+    kind: Config
+
+    clusters:
+    - cluster:
+        server: https://192.168.99.111:8443
+        certificate-authority: ca.crt
+      name: mycluster
+
+    contexts:
+    - context:
+        cluster: mycluster
+        user: surinder
+
+    users:
+    - name: surinder
+      user:
+        client-key: client.key
+        client-certificate: client.crt
+        
+        
+While creating container image copy this config file with other key certificate files that are used in it inside container image
+
 ### Create Jenkins container image with kubectl configured
 Following set of commands used for creating Jenkins container image with kubectl configured
 
@@ -110,6 +136,14 @@ Run the following command to deploy Jenkins on top of Kubernetes
     kubectl create -f jenkins-deploy.yml 
     
 Here, jenkins-deploy.yml is the deployment file of Jenkins
+
+To get the console use **minikubeIP:nodePort** in the browser. To get the node port run the following command
+
+    kubectl get svc/jenkins-deploy
+    
+Configure the jenkins and install the required plugins. Must install DSL job and Build  pipeline plugin
+
+To install plugins go to **Manage Jenkins -> Manage Plugins** click on available, search for required plugins and install them
 
 ### Create Jenkins jobs using DSL scripting
 #### Job1: Pull the code from Github when some developer push code to Github repository
@@ -287,23 +321,29 @@ Following is the code for creating pipeline view of the jobs
 ### Create a seed job in jenkins that pull the DSL script from Github and process the DSL script for creating the jobs
 * In Source Control Management section put the Github repository url and branch name
 
+![Git configuration](https://github.com/surinder2000/Deploy-web-app-on-kubernetes-using-jenkins-DSL-scripting/blob/master/Screenshots/SeedJob1.png)
 
 * In Build trigger section select Poll SCM for checking the github repository every minute
 
+![Build trigger](https://github.com/surinder2000/Deploy-web-app-on-kubernetes-using-jenkins-DSL-scripting/blob/master/Screenshots/SeedJob2.png)
 
 * In the Build section from Add build step select Process Job DSLs, check Look on Filesystem and put the name of the file in DSL Scripts box
 
-
+![Process DSL script](https://github.com/surinder2000/Deploy-web-app-on-kubernetes-using-jenkins-DSL-scripting/blob/master/Screenshots/SeedJob3.png)
 
 Now as soon as the DSL script is pushed into the Github repositroy by some developer, the seed job pull the code from Github repository and creates other Jenkins jobs
 
 After successful Build of seed Job following jobs created
 
+![Jobs created](https://github.com/surinder2000/Deploy-web-app-on-kubernetes-using-jenkins-DSL-scripting/blob/master/Screenshots/JobsCreated.png)
 
-The created jobs deploy web app on top of Kubernetes as soon as the developer push the code into the Github repository
+The created jobs deploys web app on top of Kubernetes as soon as the developer push the code into the Github repository
 
-This is the build pipeline view of the Jobs created by Jenkins DSL scritp
+This is the build pipeline view of the Jobs created by Jenkins DSL script
+
+![Pipelineview](https://github.com/surinder2000/Deploy-web-app-on-kubernetes-using-jenkins-DSL-scripting/blob/master/Screenshots/Pipelineview.png)
 
 
+[Jenkins DSL script that is used for creating jobs](https://github.com/surinder2000/jenkins-DSL-script)
 
 ### Thank you!
