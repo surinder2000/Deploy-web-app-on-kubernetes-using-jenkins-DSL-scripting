@@ -313,7 +313,7 @@ After successful Build of seed Job following jobs created
 
 The created jobs deploys web app on top of Kubernetes as soon as the developer push the code into the Github repository
 
-This is the build pipeline view of the Jobs created by Jenkins DSL scritp
+This is the build pipeline view of the Jobs created by Jenkins DSL script
 
 ![Pipelineview](https://github.com/surinder2000/Deploy-web-app-on-kubernetes-using-jenkins-DSL-scripting/blob/master/Screenshots/Pipelineview.png)
 
