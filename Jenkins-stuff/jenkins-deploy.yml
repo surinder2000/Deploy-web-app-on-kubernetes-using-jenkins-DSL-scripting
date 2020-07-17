@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-deploy 
+  labels:
+    app: jenkins
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app: jenkins 
+  type: NodePort
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jenkins-pv-claim
+  labels:
+    app: jenkins 
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: jenkins-deploy 
+  labels:
+    app: jenkins 
+spec:
+  selector:
+    matchLabels:
+      app: jenkins 
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: jenkins 
+    spec:
+      containers:
+      - image: surinder2000/jenkins-kube:v1.0
+        name: jenkins 
+        ports:
+        - containerPort: 8080
+          name: jenkins 
+        volumeMounts:
+        - name: jenkins-storage
+          mountPath: /root/.jenkins 
+      volumes:
+      - name: jenkins-storage
+        persistentVolumeClaim:
+          claimName: jenkins-pv-claim
