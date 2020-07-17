@@ -318,6 +318,6 @@ This is the build pipeline view of the Jobs created by Jenkins DSL scritp
 ![Pipelineview](https://github.com/surinder2000/Deploy-web-app-on-kubernetes-using-jenkins-DSL-scripting/blob/master/Screenshots/Pipelineview.png)
 
 
-[Jenkins jobs code link](https://github.com/surinder2000/jenkins-DSL-script)
+[Jenkins DSL script link](https://github.com/surinder2000/jenkins-DSL-script)
 
 ### Thank you!
